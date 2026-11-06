@@ -1,0 +1,100 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#080d1b">
+<title>NETZA · Piloto 0.1</title>
+<style>
+:root{--bg:#080d1b;--panel:#111c35;--panel2:#172542;--blue:#16b9ff;--muted:#9aacc8;--white:#f4f7ff;--line:#2b3b59;--green:#20c997;--red:#ff6b75}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--white);font:15px system-ui,-apple-system,Segoe UI,sans-serif}
+header{position:sticky;top:0;background:#080d1bf2;border-bottom:1px solid var(--line);padding:12px 16px;display:flex;align-items:center;gap:12px;z-index:3}
+header img{width:54px;height:54px;object-fit:contain;border-radius:8px}header .brand{font-weight:800;letter-spacing:2px}header small{display:block;color:var(--muted);letter-spacing:0;font-weight:400}
+main{max-width:1000px;margin:auto;padding:18px 14px 40px}.welcome{display:flex;justify-content:space-between;align-items:end;gap:12px;flex-wrap:wrap}
+h1{font-size:25px;margin:4px 0 8px}.muted{color:var(--muted)}.clock{color:var(--blue);font-size:13px;text-align:right}
+nav{display:flex;gap:7px;overflow:auto;padding:12px 0;margin-bottom:12px}
+nav button,.btn{border:1px solid var(--line);background:var(--panel);color:var(--white);padding:10px 13px;border-radius:10px;white-space:nowrap;cursor:pointer}
+nav button.active,.btn.primary{background:#12395b;border-color:#168fd0}.btn.danger{border-color:#85414b;color:#ff9da4}
+.grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}.card{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:14px;margin-bottom:12px}.metric{font-size:22px;font-weight:750;margin-top:6px}.label{font-size:12px;color:var(--muted);text-transform:uppercase;letter-spacing:.6px}
+.section{display:none}.section.active{display:block}.row{display:flex;gap:9px;flex-wrap:wrap;align-items:center}.row>*{flex:1}
+input,select,textarea{width:100%;background:#0b1428;color:var(--white);border:1px solid var(--line);border-radius:9px;padding:11px;margin:5px 0 10px;font:inherit}
+label{font-size:12px;color:var(--muted)}.formgrid{display:grid;grid-template-columns:repeat(2,1fr);gap:8px}
+table{width:100%;border-collapse:collapse;font-size:13px}th,td{text-align:left;padding:10px 7px;border-bottom:1px solid var(--line)}th{color:var(--muted);font-weight:600}
+.scroll{overflow:auto}.tag{display:inline-block;padding:4px 8px;border-radius:20px;background:#173a53;color:#8edcff;font-size:11px}
+.empty{color:var(--muted);padding:16px;text-align:center}.actions{display:flex;gap:6px;flex-wrap:wrap}.actions button{padding:6px 9px;font-size:12px}
+footer{text-align:center;color:var(--muted);font-size:11px;padding:20px}
+@media(max-width:650px){.grid{grid-template-columns:repeat(2,1fr)}.formgrid{grid-template-columns:1fr}h1{font-size:22px}.clock{text-align:left}}
+</style>
+</head>
+<body>
+<header>
+<img src="assets/logo-oficial-netza.png" alt="Logo oficial NETZA" onerror="this.style.display='none'">
+<div class="brand">NETZA <small>Controla tu negocio. Impulsa tu futuro.</small></div>
+</header>
+<main>
+<div class="welcome"><div><div class="muted" id="greeting">Bienvenido</div><h1 id="businessTitle">Mi negocio</h1><div class="muted" id="today"></div></div><div class="clock" id="clock"></div></div>
+<nav id="nav">
+<button class="active" data-tab="dashboard">Inicio</button><button data-tab="sales">Ventas</button><button data-tab="products">Inventario</button><button data-tab="expenses">Gastos</button><button data-tab="history">Registro diario</button><button data-tab="audit">Auditoría</button><button data-tab="settings">Negocio</button>
+</nav>
+<section id="dashboard" class="section active">
+<div class="grid">
+<div class="card"><div class="label">Ventas de hoy</div><div class="metric" id="mSales">$0</div></div>
+<div class="card"><div class="label">Costos registrados</div><div class="metric" id="mCosts">$0</div></div>
+<div class="card"><div class="label">Gastos de hoy</div><div class="metric" id="mExpenses">$0</div></div>
+<div class="card"><div class="label">Resultado estimado</div><div class="metric" id="mProfit">$0</div></div>
+</div>
+<div class="card"><h3>Actividad reciente</h3><div id="recent" class="empty">Todavía no hay operaciones.</div></div>
+<div class="card"><b>Importante</b><p class="muted">Esta versión piloto guarda los datos en este dispositivo y navegador. No es todavía un sistema contable ni sincroniza entre dispositivos.</p></div>
+</section>
+<section id="sales" class="section">
+<div class="card"><h3>Registrar venta</h3>
+<div class="formgrid"><div><label>Producto o concepto</label><input id="saleName" placeholder="Ej. Camiseta / corte de cabello"></div><div><label>Tipo de negocio</label><select id="saleCategory"><option>Producto</option><option>Servicio</option><option>Comida / preparación</option><option>Otro</option></select></div><div><label>Cantidad</label><input id="saleQty" type="number" min="1" value="1"></div><div><label>Precio unitario (COP)</label><input id="salePrice" type="number" min="0" placeholder="40000"></div><div><label>Costo unitario (COP), opcional</label><input id="saleCost" type="number" min="0" placeholder="20000"></div><div><label>Medio de pago</label><select id="salePayment"><option>Efectivo</option><option>Transferencia</option><option>Tarjeta</option><option>Otro</option></select></div></div>
+<button class="btn primary" onclick="addSale()">Guardar venta</button></div>
+<div class="card"><h3>Ventas registradas</h3><div class="scroll" id="salesTable"></div></div>
+</section>
+<section id="products" class="section">
+<div class="card"><h3>Agregar producto o artículo</h3><div class="formgrid"><div><label>Nombre</label><input id="prodName" placeholder="Nombre del producto"></div><div><label>Categoría</label><input id="prodCat" placeholder="Ej. Bebidas, ropa, insumos"></div><div><label>Existencias</label><input id="prodStock" type="number" min="0" value="0"></div><div><label>Costo unitario (COP)</label><input id="prodCost" type="number" min="0" value="0"></div><div><label>Precio de venta (COP)</label><input id="prodPrice" type="number" min="0" value="0"></div></div><button class="btn primary" onclick="addProduct()">Guardar producto</button></div>
+<div class="card"><h3>Inventario</h3><div class="scroll" id="productsTable"></div></div>
+</section>
+<section id="expenses" class="section">
+<div class="card"><h3>Registrar gasto</h3><div class="formgrid"><div><label>Concepto</label><input id="expenseName" placeholder="Ej. Transporte, arriendo"></div><div><label>Valor (COP)</label><input id="expenseValue" type="number" min="0"></div><div><label>Clasificación</label><select id="expenseType"><option>Gasto operativo</option><option>Compra / costo</option><option>Otro</option></select></div></div><button class="btn primary" onclick="addExpense()">Guardar movimiento</button></div>
+<div class="card"><h3>Movimientos de hoy</h3><div class="scroll" id="expensesTable"></div></div>
+</section>
+<section id="history" class="section"><div class="card"><h3>Registro diario</h3><label>Consultar fecha</label><input type="date" id="historyDate" onchange="render()"><div id="dailySummary"></div><div class="scroll" id="historyTable"></div></div></section>
+<section id="audit" class="section"><div class="card"><h3>Historial de auditoría</h3><p class="muted">Las correcciones y anulaciones quedan registradas aquí.</p><div class="scroll" id="auditTable"></div></div></section>
+<section id="settings" class="section"><div class="card"><h3>Configuración del negocio</h3><label>Nombre del negocio</label><input id="bizName" placeholder="Mi negocio"><label>Actividad económica</label><select id="bizType"><option>Comercio</option><option>Restaurante / alimentos</option><option>Servicios</option><option>Producción</option><option>Otro</option></select><label>Propietario</label><input id="owner" placeholder="Nombre del propietario"><button class="btn primary" onclick="saveSettings()">Guardar configuración</button></div>
+<div class="card"><h3>Datos de prueba</h3><button class="btn danger" onclick="if(confirm('¿Eliminar todos los datos guardados en este dispositivo?')){localStorage.removeItem(KEY);location.reload()}">Borrar datos locales</button></div></section>
+<footer>NETZA · Piloto 0.1 · Prototipo de evaluación. No usar como único registro financiero oficial.</footer>
+</main>
+<script>
+const KEY='netza_pilot_01';
+let db=JSON.parse(localStorage.getItem(KEY)||'{"business":{"name":"Mi negocio","type":"Comercio","owner":""},"sales":[],"products":[],"expenses":[],"audit":[]}');
+const money=n=>new Intl.NumberFormat('es-CO',{style:'currency',currency:'COP',maximumFractionDigits:0}).format(Number(n)||0);
+const now=()=>new Date().toISOString();
+const day=d=>{const x=new Date(d);return x.getFullYear()+'-'+String(x.getMonth()+1).padStart(2,'0')+'-'+String(x.getDate()).padStart(2,'0')};
+function save(){localStorage.setItem(KEY,JSON.stringify(db));render()}
+function log(action,detail){db.audit.unshift({id:crypto.randomUUID(),at:now(),action,detail})}
+function greet(){let h=new Date().getHours();document.getElementById('greeting').textContent=h<12?'Buenos días':h<18?'Buenas tardes':'Buenas noches';document.getElementById('clock').textContent=new Date().toLocaleTimeString('es-CO',{hour:'2-digit',minute:'2-digit',second:'2-digit'})+' · '+Intl.DateTimeFormat().resolvedOptions().timeZone;document.getElementById('today').textContent=new Date().toLocaleDateString('es-CO',{weekday:'long',year:'numeric',month:'long',day:'numeric'})}
+setInterval(greet,1000);
+document.getElementById('nav').addEventListener('click',e=>{let b=e.target.closest('button[data-tab]');if(!b)return;document.querySelectorAll('nav button').forEach(x=>x.classList.toggle('active',x===b));document.querySelectorAll('.section').forEach(x=>x.classList.toggle('active',x.id===b.dataset.tab));render()});
+function addSale(){let name=saleName.value.trim(),q=+saleQty.value,p=+salePrice.value,c=+saleCost.value;if(!name||q<1||p<0||!salePrice.value)return alert('Completa concepto, cantidad y precio.');let s={id:crypto.randomUUID(),kind:'Venta',name,category:saleCategory.value,qty:q,price:p,cost:c,total:q*p,payment:salePayment.value,at:now(),status:'Activa'};db.sales.unshift(s);let prod=db.products.find(x=>x.name.toLowerCase()===name.toLowerCase());if(prod){prod.stock=Math.max(0,prod.stock-q);log('Inventario',`Salida de ${q} unidades de ${name} por venta`)}log('Creación',`Venta ${name}: ${money(s.total)}`);save();saleName.value='';salePrice.value='';saleCost.value=''}
+function addProduct(){let name=prodName.value.trim();if(!name)return alert('Escribe el nombre.');db.products.push({id:crypto.randomUUID(),name,cat:prodCat.value,stock:+prodStock.value,cost:+prodCost.value,price:+prodPrice.value});log('Creación',`Producto agregado: ${name}`);save();prodName.value='';prodCat.value=''}
+function addExpense(){let name=expenseName.value.trim(),v=+expenseValue.value;if(!name||v<=0)return alert('Completa concepto y valor.');db.expenses.unshift({id:crypto.randomUUID(),name,value:v,type:expenseType.value,at:now(),status:'Activa'});log('Creación',`${expenseType.value}: ${name} ${money(v)}`);save();expenseName.value='';expenseValue.value=''}
+function editSale(id){let s=db.sales.find(x=>x.id===id);if(!s||s.status!=='Activa')return;let p=prompt('Nuevo precio unitario (COP):',s.price);if(p===null)return;p=Number(p);if(!Number.isFinite(p)||p<0)return alert('Precio no válido.');let reason=prompt('Motivo de la corrección:','Corrección de precio');if(!reason)return;let old=s.price;s.price=p;s.total=p*s.qty;s.editedAt=now();log('Edición',`${s.name}: precio ${money(old)} → ${money(p)}. Motivo: ${reason}`);save()}
+function voidSale(id){let s=db.sales.find(x=>x.id===id);if(!s||s.status!=='Activa')return;let reason=prompt('Motivo para anular esta venta:');if(!reason)return;s.status='Anulada';s.voidAt=now();log('Anulación',`${s.name} ${money(s.total)}. Motivo: ${reason}`);save()}
+function editExpense(id){let x=db.expenses.find(x=>x.id===id);if(!x||x.status!=='Activa')return;let v=prompt('Nuevo valor (COP):',x.value);if(v===null)return;v=Number(v);if(!Number.isFinite(v)||v<0)return alert('Valor no válido.');let r=prompt('Motivo de la corrección:');if(!r)return;let old=x.value;x.value=v;log('Edición',`${x.name}: ${money(old)} → ${money(v)}. Motivo: ${r}`);save()}
+function saveSettings(){db.business={name:bizName.value.trim()||'Mi negocio',type:bizType.value,owner:owner.value.trim()};log('Configuración','Se actualizaron los datos del negocio');save()}
+function table(rows,heads){if(!rows.length)return '<div class="empty">No hay registros.</div>';return '<table><thead><tr>'+heads.map(x=>'<th>'+x+'</th>').join('')+'</tr></thead><tbody>'+rows.join('')+'</tbody></table>'}
+function render(){greet();businessTitle.textContent=db.business.name;bizName.value=db.business.name;bizType.value=db.business.type;owner.value=db.business.owner;
+let today=day(new Date()),ss=db.sales.filter(x=>day(x.at)===today&&x.status==='Activa'),ee=db.expenses.filter(x=>day(x.at)===today&&x.status==='Activa');let sales=ss.reduce((a,x)=>a+x.total,0),cost=ss.reduce((a,x)=>a+x.qty*x.cost,0),exp=ee.reduce((a,x)=>a+x.value,0);mSales.textContent=money(sales);mCosts.textContent=money(cost);mExpenses.textContent=money(exp);mProfit.textContent=money(sales-cost-exp);
+recent.innerHTML=table([...ss.slice(0,4).map(x=>`<tr><td>Venta · ${x.name}</td><td>${money(x.total)}</td></tr>`),...ee.slice(0,3).map(x=>`<tr><td>${x.type} · ${x.name}</td><td>${money(x.value)}</td></tr>`)],['Movimiento','Valor']);
+salesTable.innerHTML=table(db.sales.map(x=>`<tr><td>${new Date(x.at).toLocaleString('es-CO')}</td><td>${x.name}<br><span class="tag">${x.status}</span></td><td>${money(x.total)}</td><td><div class="actions"><button class="btn" onclick="editSale('${x.id}')">Editar</button><button class="btn danger" onclick="voidSale('${x.id}')">Anular</button></div></td></tr>`),['Fecha','Concepto','Total','Acciones']);
+productsTable.innerHTML=table(db.products.map(x=>`<tr><td>${x.name}<br><span class="muted">${x.cat}</span></td><td>${x.stock}</td><td>${money(x.cost)}</td><td>${money(x.price)}</td></tr>`),['Producto','Stock','Costo','Precio']);
+expensesTable.innerHTML=table(db.expenses.filter(x=>day(x.at)===today).map(x=>`<tr><td>${x.name}<br><span class="tag">${x.type}</span></td><td>${money(x.value)}</td><td><button class="btn" onclick="editExpense('${x.id}')">Editar</button></td></tr>`),['Concepto','Valor','Acción']);
+let hd=historyDate.value||today;historyDate.value=hd;let ds=db.sales.filter(x=>day(x.at)===hd),de=db.expenses.filter(x=>day(x.at)===hd);let total=ds.filter(x=>x.status==='Activa').reduce((a,x)=>a+x.total,0);dailySummary.innerHTML=`<p>Ventas activas: <b>${money(total)}</b> · Operaciones: <b>${ds.length}</b> · Gastos y costos registrados: <b>${de.length}</b></p>`;
+historyTable.innerHTML=table([...ds.map(x=>`<tr><td>${new Date(x.at).toLocaleTimeString('es-CO')}</td><td>Venta · ${x.name}</td><td>${money(x.total)}</td><td>${x.status}</td></tr>`),...de.map(x=>`<tr><td>${new Date(x.at).toLocaleTimeString('es-CO')}</td><td>${x.type} · ${x.name}</td><td>${money(x.value)}</td><td>${x.status}</td></tr>`)],['Hora','Movimiento','Valor','Estado']);
+auditTable.innerHTML=table(db.audit.map(x=>`<tr><td>${new Date(x.at).toLocaleString('es-CO')}</td><td>${x.action}</td><td>${x.detail}</td></tr>`),['Fecha y hora','Acción','Detalle']);
+}
+render();
+</script>
+</body></html>
